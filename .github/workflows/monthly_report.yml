@@ -1,0 +1,34 @@
+name: Production ETL Pipeline
+
+on:
+  schedule:
+    # Run at 09:00 AM on the 1st of every month
+    - cron: '0 9 1 * *'
+  # Allow manual trigger for testing/demos
+  workflow_dispatch:
+
+jobs:
+  data-pipeline:
+    name: Run Security Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Python environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Execute ETL Script
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+        run: python src/main.py
