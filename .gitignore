@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+venv/
+env/
+.venv
+
+# Environment variables
+.env
+*.log
+
+# Data
+data/*.csv
+!data/mock_logs.csv
+
+# Examples
+examples/*.html
+!examples/sample_report.png
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
