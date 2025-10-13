@@ -1,6 +1,6 @@
 """Security Log Analytics Pipeline - ETL Script
 
-Este script extrae logs de seguridad desde Supabase, los transforma usando Pandas
+Este script extrae logs de seguridad desde Supabase, los transforma usando Polars
 y genera un reporte HTML que se envía por email.
 """
 
@@ -9,7 +9,7 @@ import logging
 import argparse
 from datetime import datetime, timedelta
 from typing import Dict, Tuple, Optional
-import pandas as pd
+import polars as pl
 
 # Configure Logging
 logging.basicConfig(
@@ -66,7 +66,7 @@ class SecurityAnalyticsPipeline:
 
         return first_day_prev, first_day_current
 
-    def extract(self) -> pd.DataFrame:
+    def extract(self) -> pl.DataFrame:
         """Paso EXTRACT: Obtiene logs desde Supabase o datos mock.
 
         Returns:
@@ -88,16 +88,16 @@ class SecurityAnalyticsPipeline:
             data = response.data
             if not data:
                 logging.warning("⚠️ No logs found for this period.")
-                return pd.DataFrame()
+                return pl.DataFrame()
 
             logging.info(f"✅ Successfully extracted {len(data)} records.")
-            return pd.DataFrame(data)
+            return pl.DataFrame(data)
 
         except Exception as e:
             logging.error(f"❌ Extraction failed: {e}")
             raise
 
-    def _extract_mock_data(self) -> pd.DataFrame:
+    def _extract_mock_data(self) -> pl.DataFrame:
         """Carga datos mock desde CSV.
 
         Returns:
@@ -105,14 +105,14 @@ class SecurityAnalyticsPipeline:
         """
         logging.info("📡 Loading mock data...")
         try:
-            df = pd.read_csv("data/mock_logs.csv")
+            df = pl.read_csv("data/mock_logs.csv")
             logging.info(f"✅ Loaded {len(df)} mock records.")
             return df
         except FileNotFoundError:
             logging.error("❌ Mock data file not found.")
-            return pd.DataFrame()
+            return pl.DataFrame()
 
-    def transform(self, df: pd.DataFrame) -> Dict:
+    def transform(self, df: pl.DataFrame) -> Dict:
         """Paso TRANSFORM: Limpia datos y calcula métricas de negocio.
 
         Args:
@@ -121,27 +121,28 @@ class SecurityAnalyticsPipeline:
         Returns:
             Diccionario con métricas calculadas.
         """
-        if df.empty:
+        if df.is_empty():
             return {}
 
         logging.info("⚙️ Transforming data and calculating metrics...")
 
         # 1. Conversión de tipos
-        df['timestamp'] = pd.to_datetime(df['timestamp'])
+        df = df.with_columns(pl.col('timestamp').str.strptime(pl.Datetime))
 
         # 2. Segmentación
-        attacks_df = df[df['action'].isin(['geo_blocked', 'path_blocked', 'bot_blocked'])]
-        legitimate_df = df[df['action'] == 'legitimate']
+        attacks_df = df.filter(pl.col('action').is_in(['geo_blocked', 'path_blocked', 'bot_blocked']))
+        legitimate_df = df.filter(pl.col('action') == 'legitimate')
 
         # 3. Agregaciones
-        top_countries = attacks_df['country'].value_counts().head(5).to_dict()
+        top_countries = attacks_df.group_by('country').count().sort('count', descending=True).head(5)
+        top_countries_dict = dict(zip(top_countries['country'], top_countries['count']))
 
         # IPs sospechosas (más de 5 bloqueos)
-        suspicious_ips = attacks_df['ip'].value_counts()
-        suspicious_ips = suspicious_ips[suspicious_ips > 5].head(8).to_dict()
+        suspicious_ips = attacks_df.group_by('ip').count().filter(pl.col('count') > 5).sort('count', descending=True).head(8)
+        suspicious_ips_dict = dict(zip(suspicious_ips['ip'], suspicious_ips['count']))
 
         # Rendimiento
-        avg_latency = df['response_time_ms'].mean()
+        avg_latency = df.select(pl.col('response_time_ms').mean()).item()
 
         start_date, _ = self.get_date_range()
 
@@ -152,13 +153,13 @@ class SecurityAnalyticsPipeline:
                 "total_requests": len(df),
                 "blocked_requests": len(attacks_df),
                 "security_score": round((len(attacks_df) / len(df)) * 100, 2) if len(df) > 0 else 0,
-                "avg_latency_ms": int(avg_latency) if not pd.isna(avg_latency) else 0
+                "avg_latency_ms": int(avg_latency) if avg_latency is not None else 0
             },
-            "geo_analysis": top_countries,
-            "threat_intel": suspicious_ips,
+            "geo_analysis": top_countries_dict,
+            "threat_intel": suspicious_ips_dict,
             "traffic_quality": {
                 "legitimate": len(legitimate_df),
-                "bots": len(df[df['action'] == 'bot_allowed'])
+                "bots": len(df.filter(pl.col('action') == 'bot_allowed'))
             }
         }
 

@@ -1,7 +1,7 @@
 # Automated Security Log Analytics Pipeline
 
 ![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
-![Pandas](https://img.shields.io/badge/Pandas-2.1.0-150458.svg)
+![Polars](https://img.shields.io/badge/Polars-1.0+-purple.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
 Pipeline ETL automatizado para transformar logs crudos de seguridad en inteligencia de negocio procesable.
@@ -37,7 +37,7 @@ Diseñé una arquitectura **ETL (Extract, Transform, Load)** serverless para des
 │  Python Script  │
 │  ETL Process    │
 └────────┬────────┘
-         │ Transform (Pandas)
+         │ Transform (Polars)
          ▼
 ┌─────────────────┐
 │ Data Processing │
@@ -70,7 +70,7 @@ Diseñé una arquitectura **ETL (Extract, Transform, Load)** serverless para des
 | Componente | Tecnología |
 |------------|------------|
 | **Source** | Supabase (PostgreSQL) |
-| **Processing** | Python 3.10 + Pandas |
+| **Processing** | Python 3.10 + Polars |
 | **Orchestration** | GitHub Actions (CI/CD Cron) |
 | **Delivery** | Resend API (Email) |
 | **Templating** | Jinja2 |
@@ -91,7 +91,7 @@ response = self.supabase.table("access_logs") \
     .execute()
 ```
 
-### 2. Transformación de Datos (Pandas)
+### 2. Transformación de Datos (Polars)
 
 Los logs crudos son desordenados. El pipeline realiza varios pasos de limpieza:
 
@@ -197,7 +197,7 @@ Las credenciales se gestionan de forma segura usando GitHub Secrets.
 ## Habilidades Demostradas
 
 - **Ingeniería de Datos**: Diseño de un proceso ETL robusto desde cero
-- **Ecosistema Python**: Uso avanzado de Pandas para manipulación de datos
+- **Ecosistema Python**: Uso avanzado de Polars para manipulación de datos de alto rendimiento
 - **Automatización Cloud**: Utilización de GitHub Actions para scheduling basado en cron
 - **SQL y Bases de Datos**: Interacción con APIs basadas en PostgreSQL
 - **Comunicación de Negocio**: Traducir logs técnicos crudos a insights de nivel ejecutivo
