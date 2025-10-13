@@ -48,6 +48,8 @@ Esto genera una comparación de desempeño detallada en el conjunto de datos moc
 
 **Mi Rol:** Fui contratado para diseñar e implementar un **Pipeline de Datos Automatizado** que extrajera estos datos crudos, los transformara en métricas significativas y entregara un reporte mensual de inteligencia de seguridad a los stakeholders.
 
+**Impacto:** Automatización del reporte mensual (GitHub Actions), eliminando ~12 horas/mes de trabajo manual.
+
 ---
 
 ## Arquitectura Técnica
