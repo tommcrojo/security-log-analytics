@@ -134,12 +134,12 @@ class SecurityAnalyticsPipeline:
         legitimate_df = df.filter(pl.col('action') == 'legitimate')
 
         # 3. Agregaciones
-        top_countries = attacks_df.group_by('country').count().sort('count', descending=True).head(5)
-        top_countries_dict = dict(zip(top_countries['country'], top_countries['count']))
+        top_countries = attacks_df.group_by('country').len().sort('len', descending=True).head(5)
+        top_countries_dict = dict(zip(top_countries['country'], top_countries['len']))
 
         # IPs sospechosas (más de 5 bloqueos)
-        suspicious_ips = attacks_df.group_by('ip').count().filter(pl.col('count') > 5).sort('count', descending=True).head(8)
-        suspicious_ips_dict = dict(zip(suspicious_ips['ip'], suspicious_ips['count']))
+        suspicious_ips = attacks_df.group_by('ip').len().filter(pl.col('len') > 5).sort('len', descending=True).head(8)
+        suspicious_ips_dict = dict(zip(suspicious_ips['ip'], suspicious_ips['len']))
 
         # Rendimiento
         avg_latency = df.select(pl.col('response_time_ms').mean()).item()
