@@ -1,4 +1,4 @@
-# 🛡️ Automated Security Log Analytics Pipeline
+# Automated Security Log Analytics Pipeline
 
 ![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
 ![Pandas](https://img.shields.io/badge/Pandas-2.1.0-150458.svg)
@@ -6,9 +6,9 @@
 
 Pipeline ETL automatizado para transformar logs crudos de seguridad en inteligencia de negocio procesable.
 
-## 💼 Contexto de Negocio y Problema
+## Contexto de Negocio y Problema
 
-**El Cliente:** Una empresa de gestión inmobiliaria ("Cámara de Gestión") manejando datos sensibles de propiedades.
+**El Cliente:** Una empresa de gestión inmobiliaria manejando datos sensibles de propiedades.
 
 **La Infraestructura:** Una aplicación web Next.js protegida por un Edge Middleware personalizado que registra cada petición en una base de datos Supabase (PostgreSQL).
 
@@ -21,7 +21,7 @@ Pipeline ETL automatizado para transformar logs crudos de seguridad en inteligen
 
 ---
 
-## 🏗️ Arquitectura Técnica
+## Arquitectura Técnica
 
 Diseñé una arquitectura **ETL (Extract, Transform, Load)** serverless para desacoplar el analytics del servidor web de producción.
 
@@ -109,7 +109,7 @@ El output no es solo un CSV. Es un dashboard HTML renderizado que responde pregu
 
 ---
 
-## 🛠️ Configuración y Uso
+## Configuración y Uso
 
 ### Prerrequisitos
 
@@ -157,7 +157,7 @@ python src/main.py --use-mock-data
 
 ---
 
-## 📊 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 middleware-analytics/
@@ -179,7 +179,7 @@ middleware-analytics/
 
 ---
 
-## 🤖 Automatización con GitHub Actions
+## Automatización con GitHub Actions
 
 El pipeline se ejecuta automáticamente el día 1 de cada mes a las 9:00 AM UTC:
 
@@ -194,7 +194,7 @@ Las credenciales se gestionan de forma segura usando GitHub Secrets.
 
 ---
 
-## 💡 Habilidades Demostradas
+## Habilidades Demostradas
 
 - **Ingeniería de Datos**: Diseño de un proceso ETL robusto desde cero
 - **Ecosistema Python**: Uso avanzado de Pandas para manipulación de datos
@@ -204,7 +204,7 @@ Las credenciales se gestionan de forma segura usando GitHub Secrets.
 
 ---
 
-## 📈 Métricas Clave Generadas
+## Métricas Clave Generadas
 
 El reporte incluye:
 
@@ -228,7 +228,7 @@ El reporte incluye:
 
 ---
 
-## 🔒 Consideraciones de Seguridad
+## Consideraciones de Seguridad
 
 - Las credenciales nunca se commitean al repositorio (uso de `.env` y GitHub Secrets)
 - El script usa `service_role_key` de Supabase con permisos de solo lectura
@@ -236,7 +236,7 @@ El reporte incluye:
 
 ---
 
-## 🚀 Mejoras Futuras
+## Mejoras Futuras
 
 - **Alertas en Tiempo Real**: Integración con Slack/PagerDuty para ataques en curso
 - **Dashboard Interactivo**: Panel web con Streamlit o Metabase
@@ -245,19 +245,19 @@ El reporte incluye:
 
 ---
 
-## 📄 Licencia
+## Licencia
 
 Este proyecto está licenciado bajo la licencia MIT. Ver el archivo `LICENSE` para más detalles.
 
 ---
 
-## 👤 Autor
+## Autor
 
 **Tomás Campoy Rojo**
 - GitHub: [@tommcrojo](https://github.com/tommcrojo)
 
 ---
 
-## 🙏 Agradecimientos
+## Agradecimientos
 
 Este proyecto fue desarrollado como parte de una consultoría real para optimizar la visibilidad de seguridad de infraestructura web empresarial.
