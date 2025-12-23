@@ -276,12 +276,6 @@ El reporte incluye:
 
 ---
 
-## Licencia
-
-Este proyecto está licenciado bajo la licencia MIT. Ver el archivo `LICENSE` para más detalles.
-
----
-
 ## Autor
 
 **Tomás Campoy Rojo**
